@@ -94,7 +94,7 @@ void Cheats::Menu()
 			Gui.MyCheckBox("Show bar", &MenuConfig::ShowHealthBar);
 			ImGui::Combo("Health bar position", &MenuConfig::HealthBarType, "Left\0Up");
 
-			Gui.MyCheckBox("Show esp", &MenuConfig::ShowWeaponESP);
+			Gui.MyCheckBox("Weapon esp", &MenuConfig::ShowWeaponESP);
 			Gui.MyCheckBox("Show distance", &MenuConfig::ShowDistance);
 			Gui.MyCheckBox("Show name", &MenuConfig::ShowPlayerName);
 		
