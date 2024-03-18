@@ -45,9 +45,7 @@ KmBox B has no tests, so if you have problem - you can write me and I will fix i
 * Create, Save, Load, Delete
 ## Screenshots
 
-AimBot             |  Esp
-:-------------------------:|:-------------------------:
-![](https://i.ibb.co/0cWbLz9/18-03-2024-223433.jpg)  |  ![](https://i.ibb.co/hK75dYr/18-03-2024-223423.jpg)
+![](https://i.ibb.co/TbzPQ1Q/image.png)
 
 ## Contacts
 
