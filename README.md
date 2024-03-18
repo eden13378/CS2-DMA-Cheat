@@ -9,16 +9,18 @@ Firstly you need to download exe / build it from sources. In same folder drop vm
 - [offsets.json](https://github.com/a2x/cs2-dumper/blob/main/generated/offsets.json)
 - [client.dll.json](https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.json)
 After that we need to setup KmBox settings in kmbox.json
+Example for net
 ```json
-{ // Example for net
+{
    "type":"net",
    "ip":"192.168.2.11"
    "port":7777,
    "uuid":"56X21D14"
 }
 ```
+Example for b
 ```json
-{ // Example for b
+{
    "type":"b",
 }
 ```
