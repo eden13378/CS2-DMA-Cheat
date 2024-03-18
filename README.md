@@ -9,6 +9,7 @@ Firstly you need to download exe / build it from sources. In same folder drop vm
 - [offsets.json](https://github.com/a2x/cs2-dumper/blob/main/generated/offsets.json)
 - [client.dll.json](https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.json)
 After that we need to setup KmBox settings in kmbox.json
+
 Example for net
 ```json
 {
