@@ -1,5 +1,3 @@
-# Later gonna be fix of current problem with missed players
-
 # CS2 DMA Cheat
 
 Open source, do not forget to put your ⭐
@@ -27,6 +25,8 @@ Example for b
 }
 ```
 KmBox B has no tests, so if you have problem - you can write me and I will fix it.
+
+To hide menu - press F8
     
 ## Features
 

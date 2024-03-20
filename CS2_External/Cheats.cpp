@@ -308,6 +308,10 @@ void Cheats::Run()
 		if (MenuConfig::ShowRadar)
 			Radar.AddPoint(LocalEntityPlayer.Pawn.Pos, Entity.Pawn.ViewAngle.y, Entity.Pawn.Pos, ImColor(237, 85, 106, 200), Entity.Pawn.ViewAngle.y, (int)(Entity.Controller.TeamID == LocalEntityPlayer.Controller.TeamID), Entity.Pawn.Health);
 
+
+		if (MenuConfig::TeamCheck && Entity.Controller.TeamID == LocalEntityPlayer.Controller.TeamID)
+			continue;
+
 		if (!Entity.IsInScreen())
 			continue;
 
@@ -412,7 +416,6 @@ void Cheats::Run()
 	if (MenuConfig::ShowRadar)
 	{
 		Radar.Render();
-		//End for radar window
 		ImGui::End();
 	}
 

@@ -50,6 +50,7 @@ void Base_Radar::UpdateMap(std::string mapname) {
 		else if (mp::current_map_name == "de_vertigo") {
 			D3DX11CreateShaderResourceViewFromMemory(Gui.getDevice(), mp::de_vertigo, sizeof(mp::de_vertigo), &info_text, pump_text, &mp::map_texture, 0);
 		}
+		delete pump_text;
 	}
 }
 

@@ -4,16 +4,20 @@
 #include <vector>
 #include <Tlhelp32.h>
 #include <atlconv.h>
-#include <array>
 #include <leechcore.h>
 #include <vmmdll.h>
 #include <chrono>
+
 #define _is_invalid(v) if(v==NULL) return false
 #define _is_invalid(v,n) if(v==NULL) return n
 
-using namespace std::chrono;
+/*
+	@Liv github.com/TKazer
+*/
 
-
+/// <summary>
+/// 进程状态码
+/// </summary>
 enum StatusCode
 {
 	SUCCEED,
@@ -31,12 +35,14 @@ struct Info
 };
 
 
+/// <summary>
+/// 进程管理
+/// </summary>
 class ProcessManager
 {
 private:
 
 	bool   Attached = false;
-
 
 	uint64_t gafAsyncKeyStateExport = 0;
 	uint8_t state_bitmap[64]{ };
@@ -48,8 +54,6 @@ private:
 
 	DWORD  ProcessID2 = 0;
 
-
-
 public:
 	std::string AttachProcessName;
 	HANDLE hProcess = 0;
@@ -58,17 +62,21 @@ public:
 public:
 	~ProcessManager()
 	{
-		VMMDLL_Close(this->HANDLE);
+		//if (hProcess)
+			//CloseHandle(hProcess);
 	}
 
+	/// <summary>
+	/// 附加
+	/// </summary>
+	/// <param name="ProcessName">进程名</param>
+	/// <returns>进程状态码</returns>
 	StatusCode Attach(std::string ProcessName)
 	{
 		this->AttachProcessName = ProcessName;
-		//LPSTR args[] = { (LPSTR)"",(LPSTR)"-device", (LPSTR)"FPGA",(LPSTR)"-norefresh"};
-		//this->HANDLE = VMMDLL_Initialize(3, args);
-		std::vector<LPSTR> args = { (LPSTR)"", (LPSTR)"-device", (LPSTR)"fpga", (LPSTR)"-norefresh" };
-		this->HANDLE = VMMDLL_Initialize(4, args.data());
-		std::cout << "[ VMMDLL ] Handle: " << this->HANDLE << std::endl;
+		LPSTR args[] = { (LPSTR)"",(LPSTR)"-device", (LPSTR)"FPGA",(LPSTR)"-norefresh" };
+		this->HANDLE = VMMDLL_Initialize(3, args);
+
 		if (this->HANDLE) {
 			SIZE_T pcPIDs;
 			VMMDLL_PidList(this->HANDLE, nullptr, &pcPIDs);
@@ -82,25 +90,29 @@ public:
 				SIZE_T pcbProcessInformation = sizeof(VMMDLL_PROCESS_INFORMATION);
 				VMMDLL_ProcessGetInformation(this->HANDLE, pPIDs[i], &ProcessInformation, &pcbProcessInformation);
 
-				if (strcmp(ProcessInformation.szName, ProcessName.c_str()) == 0) {
+
+				if (strcmp(ProcessInformation.szName, "cs2.exe") == 0) {
+					//std::cout << pPIDs[i] << "---" << ProcessInformation.szName << std::endl;  // 输出当前进程的PID和名称
 					ProcessID = pPIDs[i];
 				}
+
+
 			}
 		}
+		//VMMDLL_PidGetFromName((LPSTR)ProcessName.c_str(), &ProcessID);
 		_is_invalid(ProcessID, FAILE_PROCESSID);
 
+		//hProcess = OpenProcess(PROCESS_ALL_ACCESS | PROCESS_CREATE_THREAD, TRUE, ProcessID);
+		//_is_invalid(hProcess, FAILE_HPROCESS);
 
 		Attached = true;
 
 		return SUCCEED;
 	}
 
-	DWORD64 GetProcessModuleHandle(LPSTR modulename) {
-		PVMMDLL_MAP_MODULEENTRY shitmodule;
-		VMMDLL_Map_GetModuleFromNameU(this->HANDLE, this->ProcessID, modulename, &shitmodule, 0);
-		return shitmodule->vaBase;
-	}
-
+	/// <summary>
+	/// 取消附加
+	/// </summary>
 	void Detach()
 	{
 		if (hProcess)
@@ -110,22 +122,31 @@ public:
 		Attached = false;
 	}
 
+	/// <summary>
+	/// 判断进程是否激活状态
+	/// </summary>
+	/// <returns>是否激活状态</returns>
 	bool IsActive()
 	{
 		if (!Attached)
 			return false;
 		DWORD ExitCode{};
+		//GetExitCodeProcess(hProcess, &ExitCode);
 		return true;
 	}
 
-	bool IsLaunched() {
-		return VMMDLL_ProcessGetModuleBaseU(this->HANDLE, this->ProcessID, (LPSTR)(this->AttachProcessName).c_str()) != 0;
-	}
-
-
+	/// <summary>
+	/// 读取进程内存
+	/// </summary>
+	/// <typeparam name="ReadType">读取类型</typeparam>
+	/// <param name="Address">读取地址</param>
+	/// <param name="Value">返回数据</param>
+	/// <param name="Size">读取大小</param>
+	/// <returns>是否读取成功</returns>
 	template <typename ReadType>
 	bool ReadMemory(DWORD64 Address, ReadType& Value, int Size)
 	{
+		//_is_invalid(hProcess,false);
 		_is_invalid(ProcessID, false);
 		if (VMMDLL_MemReadEx(this->HANDLE, ProcessID, Address, (PBYTE)&Value, Size, 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
 			return true;
@@ -135,6 +156,7 @@ public:
 	template <typename ReadType>
 	bool ReadMemory(DWORD64 Address, ReadType& Value)
 	{
+		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
 
 		if (VMMDLL_MemReadEx(this->HANDLE, ProcessID, Address, (PBYTE)&Value, sizeof(ReadType), 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
@@ -157,9 +179,18 @@ public:
 		VMMDLL_Scatter_Clear(handle, ProcessID, NULL);
 	}
 
+	/// <summary>
+	/// 写入进程内存
+	/// </summary>
+	/// <typeparam name="ReadType">写入类型</typeparam>
+	/// <param name="Address">写入地址</param>
+	/// <param name="Value">写入数据</param>
+	/// <param name="Size">写入大小</param>
+	/// <returns>是否写入成功</returns>
 	template <typename ReadType>
 	bool WriteMemory(DWORD64 Address, ReadType& Value, int Size)
 	{
+		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
 		if (VMMDLL_MemWrite(this->HANDLE, ProcessID, Address, (PBYTE)&Value, Size))
 			return true;
@@ -169,6 +200,7 @@ public:
 	template <typename ReadType>
 	bool WriteMemory(DWORD64 Address, ReadType& Value)
 	{
+		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
 
 		if (VMMDLL_MemWrite(this->HANDLE, ProcessID, Address, (PBYTE)&Value, sizeof(ReadType)))
@@ -176,25 +208,20 @@ public:
 		return false;
 	}
 
-	template <typename T>
-	T ReadMemoryExtra(uintptr_t address, DWORD pid = ProcessID2, bool cache = false, const DWORD size = sizeof(T))
-	{
-		T buffer{};
-		DWORD bytes_read = 0;
-		if (!cache)
-			VMMDLL_MemReadEx(this->HANDLE, pid, address, (PBYTE)&buffer, size, &bytes_read, VMMDLL_FLAG_NOCACHE);
-		else
-			VMMDLL_MemReadEx(this->HANDLE, pid, address, (PBYTE)&buffer, size, &bytes_read, VMMDLL_FLAG_CACHE_RECENT_ONLY);
-		return buffer;
-	}
-
-
+	/// <summary>
+	/// 特征码搜索
+	/// </summary>
+	/// <param name="Signature">特征码</param>
+	/// <param name="StartAddress">起始地址</param>
+	/// <param name="EndAddress">结束地址</param>
+	/// <returns>匹配特征结果</returns>
 	std::vector<DWORD64> SearchMemory(const std::string& Signature, DWORD64 StartAddress, DWORD64 EndAddress, int SearchNum = 1);
 
 
 
 	DWORD64 TraceAddress(DWORD64 BaseAddress, std::vector<DWORD> Offsets)
 	{
+		//_is_invalid(hProcess,0);
 		_is_invalid(ProcessID, 0);
 		DWORD64 Address = 0;
 
@@ -210,6 +237,18 @@ public:
 				return 0;
 		}
 		return Address == 0 ? 0 : Address + Offsets[Offsets.size() - 1];
+	}
+
+	template <typename T>
+	T ReadMemoryExtra(uintptr_t address, DWORD pid = ProcessID2, bool cache = false, const DWORD size = sizeof(T))
+	{
+		T buffer{};
+		DWORD bytes_read = 0;
+		if (!cache)
+			VMMDLL_MemReadEx(this->HANDLE, pid, address, (PBYTE)&buffer, size, &bytes_read, VMMDLL_FLAG_NOCACHE);
+		else
+			VMMDLL_MemReadEx(this->HANDLE, pid, address, (PBYTE)&buffer, size, &bytes_read, VMMDLL_FLAG_CACHE_RECENT_ONLY);
+		return buffer;
 	}
 
 	DWORD GetProcID_Keys(LPSTR proc_name)
@@ -268,4 +307,3 @@ public:
 };
 
 inline ProcessManager ProcessMgr;
-

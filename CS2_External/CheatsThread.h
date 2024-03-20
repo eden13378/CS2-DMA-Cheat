@@ -17,5 +17,5 @@ VOID ScatterReadThreads();
 
 VOID UpdateWeaponNameThreads();
 
-VOID KeysCkeckThread();
+VOID KeysCheckThread();
 

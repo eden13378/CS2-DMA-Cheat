@@ -76,14 +76,14 @@ VOID LoadEntity()
 {
 	while (true)
 	{
-		if (LocalEntityPlayer.Controller.Address==0) {
+		if (LocalEntityPlayer.Controller.Address == 0) {
 			continue;
 		}
 		std::vector<std::thread> threads;
 		TempEntityList.clear();
 		for (int i = 0; i < 64; i++)
 		{
-			threads.push_back(std::thread(UpdatePlayer,i));
+			threads.push_back(std::thread(UpdatePlayer, i));
 		}
 		for (auto& t : threads) {
 			if (t.joinable()) {
@@ -94,7 +94,7 @@ VOID LoadEntity()
 			EntityList = TempEntityList;
 		}
 
-		Sleep(100);
+		Sleep(1);
 	}
 }
 
@@ -111,6 +111,7 @@ VOID UpdateEntityListEntry()
 VOID UpdateWeaponName(int index) {
 	EntityList[index].Pawn.GetWeaponName();
 }
+
 VOID UpdateVlue(int index) {
 
 	std::vector<BoneJointPos> BonePosList;
@@ -131,6 +132,7 @@ VOID UpdateVlue(int index) {
 	EntityList[index].Pawn.ViewAngle = EntityList[index].TempViewAngle;
 	EntityList[index].Pawn.bSpottedByMask = EntityList[index].TempbSpottedByMask;
 }
+
 VOID ScatterReadThreads()
 {
 	while (true)
@@ -138,24 +140,24 @@ VOID ScatterReadThreads()
 		Sleep(1);
 		clock_t start = clock();
 		VMMDLL_SCATTER_HANDLE handle = ProcessMgr.CreateScatterHandle();
-		
+
 		for (int i = 0; i < EntityList.size(); i++)
 		{
 			//¶Á¹Ç÷À
 
 			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.BoneData.BoneArrayAddress, EntityList[i].TempBoneArray, 30 * sizeof(BoneJointData));
 			//¶ÁÈ¡Î»ÖÃ
-			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::Pos, &EntityList[i].TempPos, sizeof(Vec3));
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address + Offset::Pos, &EntityList[i].TempPos, sizeof(Vec3));
 			//¶ÁÈ¡ÑªÁ¿
-			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::CurrentHealth, &EntityList[i].TempHealth, sizeof(int));
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address + Offset::CurrentHealth, &EntityList[i].TempHealth, sizeof(int));
 			//¶ÁÈ¡ÊÓÒ°
-			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::angEyeAngles, &EntityList[i].TempViewAngle, sizeof(Vec2));
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address + Offset::angEyeAngles, &EntityList[i].TempViewAngle, sizeof(Vec2));
 			//ÑÚÌå¼ì²â
-			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::bSpottedByMask, &EntityList[i].TempbSpottedByMask, sizeof(DWORD64));
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address + Offset::bSpottedByMask, &EntityList[i].TempbSpottedByMask, sizeof(DWORD64));
 		}
 		ProcessMgr.ExecuteReadScatter(handle);
-		
-		
+
+
 		std::vector<std::thread> threads;
 		for (int i = 0; i < EntityList.size(); i++)
 		{
@@ -166,9 +168,6 @@ VOID ScatterReadThreads()
 				t.join();
 			}
 		}
-		clock_t end = clock();
-		//std::cout << end - start << std::endl;
-		
 	}
 
 
@@ -191,13 +190,10 @@ VOID UpdateWeaponNameThreads()
 			}
 		}
 
-		uintptr_t mapaddress;
-		ProcessMgr.ReadMemory(gGame.GetMatchDLLAddress() + 0x001D2300, mapaddress);
-		ProcessMgr.ReadMemory(mapaddress + 0x4, mapname);
 	}
 }
 
-VOID KeysCkeckThread() {
+VOID KeysCheckThread() {
 	while (true)
 	{
 		Sleep(10);

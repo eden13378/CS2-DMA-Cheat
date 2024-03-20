@@ -82,7 +82,7 @@ int main()
 
 	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(UpdateWeaponNameThreads), NULL, 0, 0);
 
-	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(KeysCkeckThread), NULL, 0, 0);
+	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(KeysCheckThread), NULL, 0, 0);
 
 	Gui.NewWindow("CS2DMA", Vec2(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN)), Cheats::Run);
 
