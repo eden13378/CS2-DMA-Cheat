@@ -59,8 +59,8 @@ VOID UpdatePlayer(int index) {
 	if (!Entity.UpdateController(EntityAddress))
 		return;
 
-	if (MenuConfig::TeamCheck && Entity.Controller.TeamID == LocalEntityPlayer.Controller.TeamID)
-		return;
+	//if (MenuConfig::TeamCheck && Entity.Controller.TeamID == LocalEntityPlayer.Controller.TeamID)
+	//	return;
 
 	if (!Entity.UpdatePawn(Entity.Pawn.Address))
 		return;
