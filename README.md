@@ -1,3 +1,4 @@
+# Later gonna be fix of current problem with missed players
 
 # CS2 DMA Cheat
 
