@@ -202,6 +202,7 @@ VOID KeysCheckThread() {
 	while (true)
 	{
 		Sleep(1);
+		MenuKey = ProcessMgr.is_key_down(VK_F8);
 		AimKey = ProcessMgr.is_key_down(AimControl::HotKey);
 		TriggerKey = ProcessMgr.is_key_down(TriggerBot::HotKey);
 	}

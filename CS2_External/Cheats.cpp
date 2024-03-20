@@ -233,7 +233,8 @@ void Cheats::Menu()
 			static bool buffer = false;
 
 			if (ImGui::Checkbox("Close hack", &buffer)) {
-				exit(-1);
+				Gui.EndFlag = true;
+				//exit(-1);
 			}
 			ImGui::EndTabItem();
 
