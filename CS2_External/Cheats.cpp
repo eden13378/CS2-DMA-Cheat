@@ -180,7 +180,8 @@ void Cheats::Menu()
 			ImGui::SameLine();
 
 			Gui.MyCheckBox("Visible check", &MenuConfig::VisibleCheck);
-		
+			Gui.MyCheckBox("Ignore on shot", &AimControl::ignoreOnShot);
+
 			ImGui::EndTabItem();
 		}
 
@@ -425,6 +426,7 @@ void Cheats::Run()
 		TriggerBot::Run(LocalEntityPlayer);
 		MenuConfig::Shoot = false;
 	}
+
 	else if (MenuConfig::TriggerMode == 1 && MenuConfig::TriggerBot) 
 	{
 		MenuConfig::Shoot = true;

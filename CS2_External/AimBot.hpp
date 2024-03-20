@@ -25,16 +25,17 @@ namespace AimControl
 
     
     inline bool AutoShot = false;
+    inline bool ignoreOnShot = true;
 
     inline void SetHotKey(int Index)
     {
         HotKey = HotKeyList.at(Index);
     }
 
-
     inline void AimBot(const CEntity& Local, Vec3 LocalPos, Vec3 AimPos)
     {
         if (Local.Pawn.WeaponName == "knife") return;
+        if (ignoreOnShot && ProcessMgr.is_key_down(VK_LBUTTON)) return; // need to make var
         float Yaw, Pitch;
         float Distance, Norm, Length;
         Vec3 OppPos;

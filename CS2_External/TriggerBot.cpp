@@ -35,8 +35,7 @@ void TriggerBot::Run(const CEntity& LocalEntity)
 	auto CurTimePoint = std::chrono::steady_clock::now();
 	if (CurTimePoint - LastTimePoint >= std::chrono::milliseconds(TriggerDelay))
 	{
-		const bool isAlreadyShooting = GetAsyncKeyState(VK_LBUTTON) < 0;
-		if (!isAlreadyShooting)
+		if (!ProcessMgr.is_key_down(VK_LBUTTON))
 		{
 			if (KmBox::type == "net") {
 				KmBoxMgr.Mouse.Left(true);

@@ -23,7 +23,7 @@ namespace MyConfigSaver {
         configFile << "TriggerDelay " << TriggerBot::TriggerDelay << std::endl;
         configFile << "ShowBoxESP " << MenuConfig::ShowBoxESP << std::endl;
         configFile << "TriggerHotKey " << MenuConfig::TriggerHotKey << std::endl;
-        configFile << "TriggerMode " << MenuConfig::TriggerMode << std::endl;//TriggerMode
+        configFile << "TriggerMode " << MenuConfig::TriggerMode << std::endl;
         configFile << "ShowHealthBar " << MenuConfig::ShowHealthBar << std::endl;
         configFile << "AimFov " << AimControl::AimFov << std::endl;
         configFile << "AimBotHotKey " << MenuConfig::AimBotHotKey << std::endl;
@@ -41,6 +41,7 @@ namespace MyConfigSaver {
         configFile << "AimPositionSniper " << MenuConfig::AimPositionSniper << std::endl;
         configFile << "AimPositionIndexSniper " << MenuConfig::AimPositionIndexSniper << std::endl;
         configFile << "AimPosition " << MenuConfig::AimPosition << std::endl;
+        configFile << "AimIgnoreOnShot " << AimControl::ignoreOnShot << std::endl;
         configFile << "AimPositionIndex " << MenuConfig::AimPositionIndex << std::endl;
         configFile << "HealthBarType " << MenuConfig::HealthBarType << std::endl;
         configFile << "BoneColor " << MenuConfig::BoneColor.Value.x << " " << MenuConfig::BoneColor.Value.y << " " << MenuConfig::BoneColor.Value.z << " " << MenuConfig::BoneColor.Value.w << std::endl;
@@ -53,7 +54,6 @@ namespace MyConfigSaver {
         configFile << "RadarSize " << mp::RadarSize << std::endl;
         configFile << "RadarLineLenght " << mp::LineLenght << std::endl;
         configFile << "RadarCircleSize " << mp::CircleSize << std::endl;
-
         configFile << "BoxType " << MenuConfig::BoxType << std::endl;
         configFile << "TriggerBot " << MenuConfig::TriggerBot << std::endl;
         configFile << "TeamCheck " << MenuConfig::TeamCheck << std::endl;
@@ -79,7 +79,7 @@ namespace MyConfigSaver {
                 else if (key == "TriggerDelay") iss >> TriggerBot::TriggerDelay;
                 else if (key == "ShowBoxESP") iss >> MenuConfig::ShowBoxESP;
                 else if (key == "TriggerHotKey") { iss >> MenuConfig::TriggerHotKey; TriggerBot::SetHotKey(MenuConfig::TriggerHotKey); }
-                else if (key == "TriggerMode") { iss >> MenuConfig::TriggerMode; TriggerBot::SetMode(MenuConfig::TriggerMode); }//TriggerMode
+                else if (key == "TriggerMode") { iss >> MenuConfig::TriggerMode; TriggerBot::SetMode(MenuConfig::TriggerMode); }
                 else if (key == "ShowHealthBar") iss >> MenuConfig::ShowHealthBar;
                 else if (key == "AimFov") iss >> AimControl::AimFov;
                 else if (key == "AimBotHotKey") { iss >> MenuConfig::AimBotHotKey; AimControl::SetHotKey(MenuConfig::AimBotHotKey); }
@@ -96,6 +96,7 @@ namespace MyConfigSaver {
                 else if (key == "AimPositionIndexPistol") iss >> MenuConfig::AimPositionIndexPistol;
                 else if (key == "AimPositionSniper") iss >> MenuConfig::AimPosition;
                 else if (key == "AimPositionIndexSniper") iss >> MenuConfig::AimPositionIndex;
+                else if (key == "AimIgnoreOnShot") iss >> AimControl::ignoreOnShot;
                 else if (key == "HealthBarType") iss >> MenuConfig::HealthBarType;
                 else if (key == "BoneColor") iss >> MenuConfig::BoneColor.Value.x >> MenuConfig::BoneColor.Value.y >> MenuConfig::BoneColor.Value.z >> MenuConfig::BoneColor.Value.w;
                 else if (key == "LineToEnemyColor") iss >> MenuConfig::LineToEnemyColor.Value.x >> MenuConfig::LineToEnemyColor.Value.y >> MenuConfig::LineToEnemyColor.Value.z >> MenuConfig::LineToEnemyColor.Value.w;

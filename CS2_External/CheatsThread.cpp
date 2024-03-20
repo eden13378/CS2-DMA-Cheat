@@ -104,6 +104,11 @@ VOID UpdateEntityListEntry()
 	{
 		// Update EntityList Entry
 		gGame.UpdateEntityListEntry();
+
+		uintptr_t mapaddress;
+		ProcessMgr.ReadMemory(gGame.GetMatchDLLAddress() + 0x001D2300, mapaddress);
+		ProcessMgr.ReadMemory(mapaddress + 0x4, mapname);
+
 		Sleep(5000);
 	}
 }
@@ -196,10 +201,9 @@ VOID UpdateWeaponNameThreads()
 VOID KeysCheckThread() {
 	while (true)
 	{
-		Sleep(10);
+		Sleep(1);
 		AimKey = ProcessMgr.is_key_down(AimControl::HotKey);
 		TriggerKey = ProcessMgr.is_key_down(TriggerBot::HotKey);
-		MenuKey = ProcessMgr.is_key_down(VK_F8);
 	}
 }
 
