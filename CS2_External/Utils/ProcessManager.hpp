@@ -7,6 +7,7 @@
 #include <leechcore.h>
 #include <vmmdll.h>
 #include <chrono>
+#include <string>
 
 #define _is_invalid(v) if(v==NULL) return false
 #define _is_invalid(v,n) if(v==NULL) return n
@@ -258,27 +259,104 @@ public:
 		return procID;
 	}
 
-	void init_keystates() {
-		this->win_logon_pid = GetProcID_Keys((LPSTR)"winlogon.exe");
-		std::cout << "[ Keys ] Winlogon: " << this->win_logon_pid << std::endl;
+	std::vector<int> GetPidListFromName(std::string name)
+	{
+		PVMMDLL_PROCESS_INFORMATION process_info = NULL;
+		DWORD total_processes = 0;
+		std::vector<int> list = { };
 
-		PVMMDLL_MAP_EAT eat_map = NULL;
-		PVMMDLL_MAP_EATENTRY eat_map_entry;
-		bool result = VMMDLL_Map_GetEATU(this->HANDLE, GetProcID_Keys((LPSTR)"winlogon.exe") | VMMDLL_PID_PROCESS_WITH_KERNELMEMORY, (LPSTR)"win32kbase.sys", &eat_map);
-		std::cout << "[ Keys ] Eatu: " << result << std::endl;
-		for (int i = 0; i < eat_map->cMap; i++)
+		if (!VMMDLL_ProcessGetInformationAll(this->HANDLE, &process_info, &total_processes))
 		{
-			eat_map_entry = eat_map->pMap + i;
-			if (strcmp(eat_map_entry->uszFunction, "gafAsyncKeyState") == 0)
-			{
-				gafAsyncKeyStateExport = eat_map_entry->vaFunction;
-
-				break;
-			}
+			return list;
 		}
 
-		VMMDLL_MemFree(eat_map);
-		eat_map = NULL;
+		for (size_t i = 0; i < total_processes; i++)
+		{
+			auto process = process_info[i];
+			if (strstr(process.szNameLong, name.c_str()))
+				list.push_back(process.dwPID);
+		}
+
+		return list;
+	}
+
+	enum class e_registry_type
+	{
+		none = REG_NONE,
+		sz = REG_SZ,
+		expand_sz = REG_EXPAND_SZ,
+		binary = REG_BINARY,
+		dword = REG_DWORD,
+		dword_little_endian = REG_DWORD_LITTLE_ENDIAN,
+		dword_big_endian = REG_DWORD_BIG_ENDIAN,
+		link = REG_LINK,
+		multi_sz = REG_MULTI_SZ,
+		resource_list = REG_RESOURCE_LIST,
+		full_resource_descriptor = REG_FULL_RESOURCE_DESCRIPTOR,
+		resource_requirements_list = REG_RESOURCE_REQUIREMENTS_LIST,
+		qword = REG_QWORD,
+		qword_little_endian = REG_QWORD_LITTLE_ENDIAN
+	};
+
+	std::string QueryValue(const char* path, e_registry_type type)
+	{
+		BYTE buffer[0x128];
+		DWORD _type = static_cast<DWORD>(type);
+		DWORD size = sizeof(buffer);
+
+		if (!VMMDLL_WinReg_QueryValueExU(this->HANDLE, const_cast<LPSTR>(path), &_type, buffer, &size))
+		{
+			return "";
+		}
+
+		std::wstring wstr = std::wstring(reinterpret_cast<wchar_t*>(buffer));
+		return std::string(wstr.begin(), wstr.end());
+	}
+
+	void init_keystates() {
+		std::string win = QueryValue("HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\CurrentBuild", e_registry_type::sz);
+		int Winver = 0;
+		if (!win.empty())
+			Winver = std::stoi(win);
+
+		this->win_logon_pid = GetProcID_Keys((LPSTR)"winlogon.exe");
+
+		std::cout << "[ Keys ] Winlogon: " << this->win_logon_pid << std::endl;
+		std::cout << "[ Keys ] Winver: " << Winver << std::endl;
+
+		if (Winver > 22000) {
+			auto pids = GetPidListFromName("csrss.exe");
+			for (size_t i = 0; i < pids.size(); i++)
+			{
+				auto pid = pids[i];
+				uintptr_t tmp = VMMDLL_ProcessGetModuleBaseU(this->HANDLE, pid, const_cast<LPSTR>("win32ksgd.sys"));
+				uintptr_t g_session_global_slots = tmp + 0x3110;
+				uintptr_t user_session_state = ReadMemoryExtra<uintptr_t>(ReadMemoryExtra<uintptr_t>(ReadMemoryExtra<uintptr_t>(g_session_global_slots, pid), pid), pid);
+				gafAsyncKeyStateExport = user_session_state + 0x3690;
+				if (gafAsyncKeyStateExport > 0x7FFFFFFFFFFF)
+					break;
+			}
+			if (!(gafAsyncKeyStateExport > 0x7FFFFFFFFFFF))
+				std::cout << "[Keys] Error: 1337" << std::endl;
+		} else {
+			PVMMDLL_MAP_EAT eat_map = NULL;
+			PVMMDLL_MAP_EATENTRY eat_map_entry;
+			bool result = VMMDLL_Map_GetEATU(this->HANDLE, GetProcID_Keys((LPSTR)"winlogon.exe") | VMMDLL_PID_PROCESS_WITH_KERNELMEMORY, (LPSTR)"win32kbase.sys", &eat_map);
+			std::cout << "[ Keys ] Eatu: " << result << std::endl;
+			for (int i = 0; i < eat_map->cMap; i++)
+			{
+				eat_map_entry = eat_map->pMap + i;
+				if (strcmp(eat_map_entry->uszFunction, "gafAsyncKeyState") == 0)
+				{
+					gafAsyncKeyStateExport = eat_map_entry->vaFunction;
+
+					break;
+				}
+			}
+			VMMDLL_MemFree(eat_map);
+			eat_map = NULL;
+
+		}
 	}
 
 	void update_key_state_bitmap() {
@@ -302,8 +380,6 @@ public:
 		}
 		return state_bitmap[(virtual_key_code * 2 / 8)] & 1 << virtual_key_code % 4 * 2;
 	}
-
-
 };
 
 inline ProcessManager ProcessMgr;

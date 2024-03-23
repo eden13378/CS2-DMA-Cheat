@@ -22,13 +22,13 @@ int main()
 	Offset::UpdateOffsets();
 	auto ProcessStatus = ProcessMgr.Attach("cs2.exe");
 
-	ProcessMgr.init_keystates();
-
 	if (ProcessStatus != StatusCode::SUCCEED)
 	{
 		std::cout << "[ error ] Failed to attach process, StatusCode:" << ProcessStatus << std::endl;
 		return -1;
 	}
+
+	ProcessMgr.init_keystates();
 
 	if (!gGame.InitAddress())
 	{
@@ -42,12 +42,12 @@ int main()
 		return -1;
 	}
 
-
 	if (!fs::exists("kmbox.json"))
 	{
 		std::cout << "[ error ] ckmbox.json not found!" << std::endl;
 		return -1;
 	}
+
 	KmBoxDataGetter kmbx("kmbox.json");
 
 	if (kmbx.type == "net") {

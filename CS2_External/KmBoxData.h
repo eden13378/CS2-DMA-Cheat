@@ -26,10 +26,12 @@ public:
 
 		type = kmboxdata["type"].GetString();
 
-		ip = kmboxdata["ip"].GetString();
+		if (type != "b") {
+			ip = kmboxdata["ip"].GetString();
 
-		port = kmboxdata["port"].GetInt64();
+			port = kmboxdata["port"].GetInt64();
 
-		uuid = kmboxdata["uuid"].GetString();
+			uuid = kmboxdata["uuid"].GetString();
+		}
 	}
 };
