@@ -7,13 +7,14 @@ Open source, do not forget to put your ⭐
 Firstly you need to download exe / build it from sources. In same folder drop vmm.dll, leechcore.dll, FTD3XX.dll. After that you need get
 - [offsets.json](https://github.com/a2x/cs2-dumper/blob/main/generated/offsets.json)
 - [client.dll.json](https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.json)
+
 After that we need to setup KmBox settings in kmbox.json
 
 Example for net
 ```json
 {
    "type":"net",
-   "ip":"192.168.2.11"
+   "ip":"192.168.2.11",
    "port":7777,
    "uuid":"56X21D14"
 }
@@ -21,7 +22,7 @@ Example for net
 Example for b
 ```json
 {
-   "type":"b",
+   "type":"b"
 }
 ```
 KmBox B has no tests, so if you have problem - you can write me and I will fix it.
@@ -34,7 +35,7 @@ To hide menu - press F8
 * ESP: Box, eye ray, health bar, weapon, distance, name
 * Lines to enemy
 - **AimBot**
-* Hotkey, Aimfov, Visual Check, Smooth
+* Hotkey, Aimfov, Visual Check, Smooth, IgnoreOnShoot
 * AutoShot, Aim bone for (default, pistols, snipers)
 - **Radar**
 * Size (small, big)
