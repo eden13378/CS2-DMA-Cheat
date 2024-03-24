@@ -102,9 +102,6 @@
     <ClInclude Include="Render.hpp">
       <Filter>Cheats</Filter>
     </ClInclude>
-    <ClInclude Include="Bunnyhop.hpp">
-      <Filter>Cheats</Filter>
-    </ClInclude>
     <ClInclude Include="Offsets.h">
       <Filter>Cheats\Offsets</Filter>
     </ClInclude>
@@ -135,7 +132,6 @@
     <ClInclude Include="Globals.hpp">
       <Filter>Cheats</Filter>
     </ClInclude>
-    <ClInclude Include="AntiFlashbang.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="CheatsThread.h">
       <Filter>Cheats</Filter>
@@ -213,9 +209,6 @@
     </ClCompile>
     <ClCompile Include="Offsets.cpp">
       <Filter>Cheats\Offsets</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\MemorySearch.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Radar\Radar.cpp">
       <Filter>Cheats\Radar</Filter>

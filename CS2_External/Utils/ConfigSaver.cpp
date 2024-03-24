@@ -30,7 +30,7 @@ namespace MyConfigSaver {
         configFile << "ShowLineToEnemy " << MenuConfig::ShowLineToEnemy << std::endl;
         configFile << "ShowWeaponESP " << MenuConfig::ShowWeaponESP << std::endl;
         configFile << "ShowDistance " << MenuConfig::ShowDistance << std::endl;
-        configFile << "Smooth " << AimControl::FakeSmooth << std::endl;
+        configFile << "Smooth " << AimControl::Smooth << std::endl;
         configFile << "ShowEyeRay " << MenuConfig::ShowEyeRay << std::endl;
         configFile << "ShowPlayerName " << MenuConfig::ShowPlayerName << std::endl;
         configFile << "AimBot " << MenuConfig::AimBot << std::endl;
@@ -86,7 +86,7 @@ namespace MyConfigSaver {
                 else if (key == "ShowLineToEnemy") iss >> MenuConfig::ShowLineToEnemy;
                 else if (key == "ShowWeaponESP") iss >> MenuConfig::ShowWeaponESP;
                 else if (key == "ShowDistance") iss >> MenuConfig::ShowDistance;
-                else if (key == "Smooth") iss >> AimControl::FakeSmooth;
+                else if (key == "Smooth") iss >> AimControl::Smooth;
                 else if (key == "ShowEyeRay") iss >> MenuConfig::ShowEyeRay;
                 else if (key == "ShowPlayerName") iss >> MenuConfig::ShowPlayerName;
                 else if (key == "AimBot") iss >> MenuConfig::AimBot;
