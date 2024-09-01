@@ -2,6 +2,10 @@
 
 Open source, do not forget to put your ⭐
 
+
+
+go here: https://github.com/Enoouo/Pro-CS2_DMA
+
 ## Installation
 
 Firstly you need to download exe / build it from sources. In same folder drop vmm.dll, leechcore.dll, FTD3XX.dll. After that you need get
