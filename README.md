@@ -5,6 +5,8 @@ Open source, do not forget to put your ⭐
 
 
 go here: https://github.com/Enoouo/Pro-CS2_DMA
+or
+here https://github.com/IvanAcoola/CS2-DMA-Software <3
 
 ## Installation
 
